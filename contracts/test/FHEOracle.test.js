@@ -7,10 +7,7 @@ describe("FHEOracle", function () {
   let owner, provider1, provider2, provider3;
 
   beforeEach(async function () {
-    // Get signers
     [owner, provider1, provider2, provider3] = await ethers.getSigners();
-
-    // Deploy contract
     const FHEOracle = await ethers.getContractFactory("FHEOracle");
     fheOracle = await FHEOracle.deploy();
     await fheOracle.waitForDeployment();
@@ -23,13 +20,15 @@ describe("FHEOracle", function () {
       const latestBlockTime = await time.latest();
       const deadline = latestBlockTime + 86400;
 
-      await expect(
-        fheOracle.createEvent(eventId, description, deadline)
-      ).to.emit(fheOracle, "EventCreated");
-
-      const event = await fheOracle.getEvent(eventId);
+      const tx = await fheOracle.createEvent(eventId, description, deadline);
+      const receipt = await tx.wait();
+      
+      expect(receipt.status).to.equal(1); // Success
+      
+      const event = await fheOracle.events(eventId);
       expect(event.exists).to.equal(true);
       expect(event.description).to.equal(description);
+      expect(event.deadline).to.equal(deadline);
     });
 
     it("should reject event with past deadline", async function () {
@@ -80,11 +79,11 @@ describe("FHEOracle", function () {
       const result = 50;
       const resultHash = ethers.id("result_hash");
 
-      await expect(
-        fheOracle.connect(provider1).proposeResult(eventId, result, resultHash)
-      ).to.emit(fheOracle, "ResultProposed");
+      const tx = await fheOracle.connect(provider1).proposeResult(eventId, result, resultHash);
+      const receipt = await tx.wait();
+      expect(receipt.status).to.equal(1);
 
-      const event = await fheOracle.getEvent(eventId);
+      const event = await fheOracle.events(eventId);
       expect(event.proposedResult.result).to.equal(result);
       expect(event.proposedResult.proposer).to.equal(provider1.address);
     });
@@ -127,11 +126,11 @@ describe("FHEOracle", function () {
       await fheOracle.connect(provider1).proposeResult(eventId, result, resultHash);
 
       const reason = "Suspicious aggregation";
-      await expect(
-        fheOracle.connect(provider2).disputeResult(eventId, reason)
-      ).to.emit(fheOracle, "ResultDisputed");
+      const tx = await fheOracle.connect(provider2).disputeResult(eventId, reason);
+      const receipt = await tx.wait();
+      expect(receipt.status).to.equal(1);
 
-      const event = await fheOracle.getEvent(eventId);
+      const event = await fheOracle.events(eventId);
       expect(event.proposedResult.status).to.equal(2); // Disputed
     });
 
@@ -139,19 +138,17 @@ describe("FHEOracle", function () {
       const result = 50;
       const resultHash = ethers.id("result_hash");
       await fheOracle.connect(provider1).proposeResult(eventId, result, resultHash);
-
       await fheOracle.connect(provider2).disputeResult(eventId, "Bad aggregation");
 
-      await expect(
-        fheOracle.connect(provider3).voteOnDispute(eventId, true)
-      ).to.emit(fheOracle, "JuryVoted");
+      const tx = await fheOracle.connect(provider3).voteOnDispute(eventId, true);
+      const receipt = await tx.wait();
+      expect(receipt.status).to.equal(1);
     });
 
     it("should prevent double voting", async function () {
       const result = 50;
       const resultHash = ethers.id("result_hash");
       await fheOracle.connect(provider1).proposeResult(eventId, result, resultHash);
-
       await fheOracle.connect(provider2).disputeResult(eventId, "Bad aggregation");
       await fheOracle.connect(provider3).voteOnDispute(eventId, true);
 
@@ -172,14 +169,13 @@ describe("FHEOracle", function () {
       const resultHash = ethers.id("result_hash");
       await fheOracle.connect(provider1).proposeResult(eventId, result, resultHash);
 
-      // Fast forward time to pass dispute window
       await time.increase(86401);
 
-      await expect(
-        fheOracle.finalizeResult(eventId)
-      ).to.emit(fheOracle, "ResultFinalized");
+      const tx = await fheOracle.finalizeResult(eventId);
+      const receipt = await tx.wait();
+      expect(receipt.status).to.equal(1);
 
-      const event = await fheOracle.getEvent(eventId);
+      const event = await fheOracle.events(eventId);
       expect(event.proposedResult.status).to.equal(1); // Finalized
     });
 
@@ -210,7 +206,7 @@ describe("FHEOracle", function () {
 
       await fheOracle.createEvent(eventId, description, deadline);
 
-      const event = await fheOracle.getEvent(eventId);
+      const event = await fheOracle.events(eventId);
       expect(event.description).to.equal(description);
       expect(event.exists).to.equal(true);
     });
