@@ -98,10 +98,14 @@ jobs:
         working-directory: sdk
 
       - name: Unit Tests (Quantization JS)
-        run: npm run test:quantization
+        run: |
+          cd /workspaces/blocksense-fhe-oracle
+          npm run test:quantization
 
       - name: SDK Integration Tests
-        run: npm run test:sdk
+        run: |
+          cd /workspaces/blocksense-fhe-oracle
+          npm run test:sdk
 
       - name: Audit Dependencies
         run: npm audit --audit-level=moderate || true
@@ -124,16 +128,19 @@ jobs:
         working-directory: contracts
 
       - name: Compile Contracts
-        run: npm run compile
-        working-directory: contracts
+        run: |
+          cd /workspaces/blocksense-fhe-oracle/contracts
+          npx hardhat compile
 
       - name: Solidity Linting
-        run: npx solhint 'contracts/**/*.sol' || true
-        working-directory: contracts
+        run: |
+          cd /workspaces/blocksense-fhe-oracle/contracts
+          npx solhint 'contracts/**/*.sol' || true
 
       - name: Run Hardhat Tests
-        run: npm test
-        working-directory: contracts
+        run: |
+          cd /workspaces/blocksense-fhe-oracle/contracts
+          npm test
 
       - name: Generate Gas Report
         run: npm test 2>&1 | tee gas_report.txt || true
