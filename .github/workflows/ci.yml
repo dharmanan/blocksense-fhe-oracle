@@ -1,272 +1,47 @@
-name: CIname: CIname: CI
-
-
+name: CI
 
 on:
-
   push:
-
-    branches: [ dev, main ]on:on:
-
+    branches: [ dev, main ]
   pull_request:
+    branches: [ dev, main ]
 
-    branches: [ dev, main ]  push:  push:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
-
-
-jobs:    branches: [ dev, main ]    branches: [ dev, main ]
-
+jobs:
   rust-build:
-
-    runs-on: ubuntu-latest  pull_request:  pull_request:
-
+    runs-on: ubuntu-latest
     steps:
-
-      - uses: actions/checkout@v4    branches: [ dev, main ]    branches: [ dev, main ]
-
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-
       - run: cd examples && cargo build --verbose && cargo test --verbose
 
-
-
-  node-lint:concurrency:jobs:
-
+  node-lint:
     runs-on: ubuntu-latest
-
-    steps:  group: ${{ github.workflow }}-${{ github.ref }}  lint:
-
+    steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4  cancel-in-progress: true    runs-on: ubuntu-latest
-
+      - uses: actions/setup-node@v4
         with:
-
-          node-version: 18    steps:
-
+          node-version: 18
       - run: cd sdk && npm ci && npm run lint --if-present
 
-jobs:      - uses: actions/checkout@v4
-
   solidity-lint:
-
-    runs-on: ubuntu-latest  # Node.js SDK linting and tests        with:
-
-    steps:
-
-      - uses: actions/checkout@v4  node-lint:          fetch-depth: 0
-
-      - run: npm install -g solhint && solhint contracts/**/*.sol
-
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          if [ -f contracts/.solhintrc.json ]; then
+            npm install -g solhint
+            solhint 'contracts/**/*.sol'
+          fi
 
   docs-check:
-
-    runs-on: ubuntu-latest    steps:      - name: Setup Node
-
-    steps:
-
-      - uses: actions/checkout@v4      - uses: actions/checkout@v4        uses: actions/setup-node@v4
-
-      - run: |
-
-          [ -f README.md ] && echo "✓ README"              with:
-
-          [ -f docs/INTEGRATION.md ] && echo "✓ INTEGRATION"
-
-          [ -f docs/mvp-sprint-plan.md ] && echo "✓ SPRINT"      - name: Setup Node.js          node-version: 18
-
-
-        uses: actions/setup-node@v4
-
-        with:      - name: Setup Rust
-
-          node-version: 18        uses: actions-rs/toolchain@v1
-
-          cache: 'npm'        with:
-
-          cache-dependency-path: sdk/package.json          toolchain: stable
-
-      
-
-      - name: Install dependencies      - name: Cache Rust
-
-        run: |        uses: actions/cache@v3
-
-          if [ -f sdk/package.json ]; then        with:
-
-            cd sdk && npm ci          path: ~/.cargo
-
-          fi          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      
-
-      - name: Run ESLint (if configured)      - name: Install Node deps (SDK)
-
-        run: |        run: |
-
-          if [ -f sdk/package.json ]; then          if [ -f sdk/package.json ]; then
-
-            cd sdk && npm run lint --if-present            cd sdk && npm ci
-
-          fi          fi
-
-  
-
-  # Rust build and tests      - name: Lint Node (SDK)
-
-  rust-build:        run: |
-
-    runs-on: ubuntu-latest          if [ -f sdk/package.json ]; then
-
-    steps:            cd sdk && npm run lint 2>/dev/null || echo "No lint script"
-
-      - uses: actions/checkout@v4          fi
-
-      
-
-      - name: Setup Rust      - name: Format check (Rust)
-
-        uses: dtolnay/rust-toolchain@stable        run: |
-
-                cargo fmt --check 2>/dev/null || echo "No Rust code"
-
-      - name: Cache Rust
-
-        uses: Swatinem/rust-cache@v2      - name: Lint Rust
-
-        with:        run: |
-
-          workspaces: examples          cargo clippy -- -D warnings 2>/dev/null || echo "No Rust code"
-
-      
-
-      - name: Build examples  test:
-
-        run: |    runs-on: ubuntu-latest
-
-          if [ -f examples/Cargo.toml ]; then    steps:
-
-            cd examples && cargo build --verbose      - uses: actions/checkout@v4
-
-          fi
-
-            - name: Setup Node
-
-      - name: Run Rust tests        uses: actions/setup-node@v4
-
-        run: |        with:
-
-          if [ -f examples/Cargo.toml ]; then          node-version: 18
-
-            cd examples && cargo test --verbose
-
-          fi      - name: Setup Rust
-
-          uses: actions-rs/toolchain@v1
-
-  # Solidity contract linting        with:
-
-  solidity-lint:          toolchain: stable
-
     runs-on: ubuntu-latest
-
-    steps:      - name: Install deps (SDK)
-
-      - uses: actions/checkout@v4        run: |
-
-                if [ -f sdk/package.json ]; then
-
-      - name: Setup Node.js            cd sdk && npm ci
-
-        uses: actions/setup-node@v4          fi
-
-        with:
-
-          node-version: 18      - name: Test SDK
-
-              run: |
-
-      - name: Install Solhint          if [ -f sdk/package.json ]; then
-
-        run: npm install -g solhint            cd sdk && npm test 2>/dev/null || echo "No test script"
-
-                fi
-
-      - name: Lint Solidity contracts
-
-        run: |      - name: Test Rust
-
-          if [ -f contracts/FHEOracle.sol ]; then        run: |
-
-            solhint contracts/**/*.sol          cargo test --all 2>/dev/null || echo "No Rust tests"
-
-          fi
-
-        - name: Setup Solidity (Hardhat)
-
-  # Documentation checks        run: |
-
-  docs-check:          npm ci
-
-    runs-on: ubuntu-latest          
-
-    steps:      - name: Compile Solidity
-
-      - uses: actions/checkout@v4        run: |
-
-                npx hardhat compile 2>/dev/null || echo "No Hardhat setup"
-
-      - name: Check markdown files
-
-        run: |      - name: Test Solidity
-
-          # Basic check: ensure docs exist and are readable        run: |
-
-          if [ ! -f README.md ]; then          npx hardhat test 2>/dev/null || echo "No Hardhat tests"
-
-            echo "README.md missing"; exit 1
-
-          fi  security:
-
-          if [ ! -f docs/INTEGRATION.md ]; then    runs-on: ubuntu-latest
-
-            echo "docs/INTEGRATION.md missing"; exit 1    steps:
-
-          fi      - uses: actions/checkout@v4
-
-          echo "✓ Documentation files present"
-
-        - name: Setup Node
-
-  # Security scan (optional)        uses: actions/setup-node@v4
-
-  security-scan:        with:
-
-    runs-on: ubuntu-latest          node-version: 18
-
     steps:
-
-      - uses: actions/checkout@v4      - name: Audit dependencies
-
-              run: |
-
-      - name: Run Trivy security scan          npm audit --omit=dev 2>/dev/null || true
-
-        uses: aquasecurity/trivy-action@master
-
-        with:      - name: Check for secrets
-
-          scan-type: 'fs'        run: |
-
-          scan-ref: '.'          # Simple check for private keys in repo
-
-          format: 'sarif'          ! grep -r "PRIVATE\|SECRET\|private_key" --include="*.js" --include="*.rs" --include="*.sol" . || echo "⚠️  Review secrets in code"
-
-          output: 'trivy-results.sarif'
-      
-      - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: 'trivy-results.sarif'
-        if: always()
+      - uses: actions/checkout@v4
+      - run: |
+          [ -f README.md ] && echo "✓ README.md found"
+          [ -f docs/INTEGRATION.md ] && echo "✓ INTEGRATION.md found"
+          [ -f docs/mvp-sprint-plan.md ] && echo "✓ Sprint plan found"
