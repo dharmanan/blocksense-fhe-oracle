@@ -41,23 +41,16 @@ jobs:
             ~/.cargo/git/db
 
       - name: Lint (Clippy)
-        run: |
-          cd /workspaces/blocksense-fhe-oracle
-          cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --all-targets --all-features -- -D warnings
 
       - name: Unit Tests (Quantization)
-        run: |
-          cd /workspaces/blocksense-fhe-oracle
-          cargo test --test quantization_test -- --nocapture
+        run: cargo test --test quantization_test -- --nocapture
 
       - name: Build Examples
-        run: |
-          cd /workspaces/blocksense-fhe-oracle
-          cargo build --example zama_integer_sum --release
+        run: cargo build --example zama_integer_sum --release
 
       - name: Feature Flag Tests
         run: |
-          cd /workspaces/blocksense-fhe-oracle
           cargo test --no-default-features
           cargo test --all-features
 
@@ -94,29 +87,24 @@ jobs:
           cache: 'npm'
 
       - name: Install SDK Dependencies
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/sdk
-          npm ci
+        run: npm ci
+        working-directory: sdk
 
       - name: Lint SDK
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/sdk
-          npm run lint || npx eslint . || true
+        run: npm run lint || npx eslint . || true
+        working-directory: sdk
 
       - name: Unit Tests (Quantization JS)
-        run: |
-          cd /workspaces/blocksense-fhe-oracle
-          npm test --prefix=. tests/quantization.test.js 2>/dev/null || npx mocha tests/quantization.test.js || true
+        run: npx mocha quantization.test.js || true
+        working-directory: tests
 
       - name: SDK Integration Tests
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/sdk
-          npm test 2>/dev/null || echo "Tests completed with status code $?"
+        run: npm test 2>/dev/null || echo "Tests completed with status code $?"
+        working-directory: sdk
 
       - name: Audit Dependencies
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/sdk
-          npm audit --audit-level=moderate || true
+        run: npm audit --audit-level=moderate || true
+        working-directory: sdk
 
   solidity-lint:
     name: 🔷 Solidity Lint & Contract Tests
@@ -131,44 +119,36 @@ jobs:
           cache: 'npm'
 
       - name: Install Contract Dependencies
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npm ci
+        run: npm ci
+        working-directory: contracts
 
       - name: Compile Contracts
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npm run compile
+        run: npm run compile
+        working-directory: contracts
 
       - name: Solidity Linting
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npx solhint 'contracts/**/*.sol' || true
+        run: npx solhint 'contracts/**/*.sol' || true
+        working-directory: contracts
 
       - name: Run Hardhat Tests
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npm test
+        run: npm test
+        working-directory: contracts
 
       - name: Generate Gas Report
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npm test 2>&1 | tee gas_report.txt || true
+        run: npm test 2>&1 | tee gas_report.txt || true
+        working-directory: contracts
 
       - name: Gas Snapshot (Local Reference)
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          cat gas_report.txt || echo "Gas report not available"
+        run: cat gas_report.txt || echo "Gas report not available"
+        working-directory: contracts
 
       - name: Contract Size Check
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npm run size-contracts 2>/dev/null || echo "Size check skipped"
+        run: npm run size-contracts 2>/dev/null || echo "Size check skipped"
+        working-directory: contracts
 
       - name: Flatten Contract (Verification Ready)
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npm run flatten || echo "Flatten script not available"
+        run: npm run flatten || echo "Flatten script not available"
+        working-directory: contracts
 
   docs-check:
     name: 📚 Documentation Validation
@@ -179,7 +159,7 @@ jobs:
       - name: Check Markdown Syntax
         run: |
           echo "✓ Checking Markdown files..."
-          find /workspaces/blocksense-fhe-oracle/docs -name "*.md" -type f | while read file; do
+          find docs -name "*.md" -type f | while read file; do
             echo "  Checking: $file"
             if grep -q "^#" "$file"; then
               echo "    ✓ Contains headers"
@@ -189,9 +169,9 @@ jobs:
       - name: Validate Architecture Consistency
         run: |
           echo "✓ Validating documentation cross-references..."
-          ARCH_FILE="/workspaces/blocksense-fhe-oracle/docs/ARCHITECTURE.md"
-          ZAMA_FILE="/workspaces/blocksense-fhe-oracle/docs/ZAMA-INTEGRATION.md"
-          DIAG_FILE="/workspaces/blocksense-fhe-oracle/docs/ARCHITECTURE-DIAGRAMS.md"
+          ARCH_FILE="docs/ARCHITECTURE.md"
+          ZAMA_FILE="docs/ZAMA-INTEGRATION.md"
+          DIAG_FILE="docs/ARCHITECTURE-DIAGRAMS.md"
           
           if [ -f "$ARCH_FILE" ]; then
             echo "  ✓ ARCHITECTURE.md exists ($(wc -l < $ARCH_FILE) lines)"
@@ -206,7 +186,7 @@ jobs:
       - name: List Documentation Files
         run: |
           echo "📋 Documentation Structure:"
-          find /workspaces/blocksense-fhe-oracle/docs -type f -name "*.md" | sort | while read file; do
+          find docs -type f -name "*.md" | sort | while read file; do
             lines=$(wc -l < "$file")
             echo "  • $(basename $file) - $lines lines"
           done
@@ -214,7 +194,7 @@ jobs:
       - name: Link Checker (Basic)
         run: |
           echo "🔗 Checking documentation links..."
-          cd /workspaces/blocksense-fhe-oracle/docs
+          cd docs
           for file in *.md; do
             echo "  Checking $file for dead references..."
             grep -o '\[.*\](' "$file" | wc -l | xargs echo "    Found external links:"
@@ -239,39 +219,38 @@ jobs:
           toolchain: stable
 
       - name: Install Contract Dependencies
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npm ci
+        run: npm ci
+        working-directory: contracts
 
       - name: Start Hardhat Node (Background)
         run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
           npm run node > hardhat.log 2>&1 &
           echo $! > hardhat.pid
           sleep 3
+        working-directory: contracts
 
       - name: Deploy Contract Locally
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          timeout 30 npm run deploy:local || echo "Deploy completed or timed out"
+        run: timeout 30 npm run deploy:local || echo "Deploy completed or timed out"
+        working-directory: contracts
 
       - name: Run Integration Test Suite
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npm test 2>&1 | tee integration_results.txt
+        run: npm test 2>&1 | tee integration_results.txt
+        working-directory: contracts
 
       - name: Verify Test Results
         run: |
-          if grep -q "passing" /workspaces/blocksense-fhe-oracle/contracts/integration_results.txt; then
+          if grep -q "passing" integration_results.txt; then
             echo "✅ Integration tests completed"
           fi
+        working-directory: contracts
 
       - name: Stop Hardhat Node
         if: always()
         run: |
-          if [ -f /workspaces/blocksense-fhe-oracle/contracts/hardhat.pid ]; then
-            kill $(cat /workspaces/blocksense-fhe-oracle/contracts/hardhat.pid) || true
+          if [ -f hardhat.pid ]; then
+            kill $(cat hardhat.pid) || true
           fi
+        working-directory: contracts
 
   security-audit:
     name: 🔒 Security Audit
@@ -287,7 +266,7 @@ jobs:
       - name: Check for Hardcoded Secrets
         run: |
           echo "🔍 Checking for hardcoded secrets..."
-          if grep -r "PRIVATE_KEY" --include="*.js" --include="*.ts" --include="*.sol" /workspaces/blocksense-fhe-oracle | grep -v ".env.example" | grep -v "template"; then
+          if grep -r "PRIVATE_KEY" --include="*.js" --include="*.ts" --include="*.sol" . | grep -v ".env.example" | grep -v "template"; then
             echo "⚠️  WARNING: Possible hardcoded secrets found"
             exit 0
           else
@@ -295,24 +274,21 @@ jobs:
           fi
 
       - name: Install Contract Dependencies
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npm ci
+        run: npm ci
+        working-directory: contracts
 
       - name: Run Slither (If Available)
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npx hardhat check-contracts 2>/dev/null || echo "Slither check skipped"
+        run: npx hardhat check-contracts 2>/dev/null || echo "Slither check skipped"
+        working-directory: contracts
 
       - name: Dependency Vulnerability Scan
         run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
           npm audit --json > audit_report.json || true
           cat audit_report.json | jq '.metadata.vulnerabilities' || echo "No audit data"
+        working-directory: contracts
 
       - name: License Check
         run: |
-          cd /workspaces/blocksense-fhe-oracle
           echo "📜 License: MIT (as per LICENSE file)"
           head -5 LICENSE
 
