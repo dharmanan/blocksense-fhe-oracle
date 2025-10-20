@@ -20,13 +20,15 @@ blocksense-fhe-oracle/
 ├── sdk/
 │   └── encrypt.js
 ├── .github/workflows/
-│   └── ci.yml
+│   └── ci.yaml
 ├── .gitignore
 ├── LICENSE
 └── README.md
 ```
 
 ## 🚀 Quick Start
+
+
 
 ```bash
 git clone https://github.com/dharmanan/blocksense-fhe-oracle.git
@@ -51,3 +53,19 @@ See `docs/INTEGRATION.md` for technical details and `docs/mvp-sprint-plan.md` fo
 MIT — See LICENSE for details.
 
 **Status**: 🚧 POC Phase
+
+
+## 🏗️ Architecture
+
+Data Provider → Quantize & Encrypt → FHE Compute → Threshold Decrypt → On-Chain Settlement
+
+See `docs/INTEGRATION.md` for technical details and `docs/mvp-sprint-plan.md` for roadmap.
+
+## 📝 License
+
+MIT — See LICENSE for details.
+
+**Status**: 🚧 POC Phase
+=======
+# blocksense-fhe-oracle
+>>>>>>> origin/main
