@@ -78,21 +78,20 @@ npm run node                                # Start local blockchain
 npm run deploy:local                        # Deploy to localhost
 ```
 
-### View Documentation
-```bash
-# Core Architecture & Design
-- docs/ARCHITECTURE.md             → System design (11 sections)
-- docs/ARCHITECTURE-DIAGRAMS.md    → Visual diagrams (7 types)
+### 📚 Documentation
 
-# Integration Guides
-- docs/HARDHAT.md                  → Smart contract development
-- docs/ZAMA-INTEGRATION.md         → FHE library integration
-- docs/quantization-spec.md        → Quantization rules & test vectors
+**Core Architecture & Design**
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — System design (11 sections)
+- [ARCHITECTURE-DIAGRAMS.md](docs/ARCHITECTURE-DIAGRAMS.md) — Visual diagrams (7 types)
 
-# Roadmap & Planning
-- docs/mvp-sprint-plan.md          → 10-week development roadmap
-- docs/INTEGRATION.md              → Full API reference
-```
+**Integration Guides**
+- [HARDHAT.md](docs/HARDHAT.md) — Smart contract development
+- [ZAMA-INTEGRATION.md](docs/ZAMA-INTEGRATION.md) — FHE library integration
+- [quantization-spec.md](docs/quantization-spec.md) — Quantization rules & test vectors
+
+**Roadmap & Planning**
+- [mvp-sprint-plan.md](docs/mvp-sprint-plan.md) — 10-week development roadmap
+- [INTEGRATION.md](docs/INTEGRATION.md) — Full API reference
 
 ## 🏗️ Architecture
 
@@ -228,9 +227,9 @@ Run locally:
 npm run ci:all  # If available, or run individual suites
 ```
 
-## � Project Status
+## 📊 Project Status
 
-### ✅ HAFTA 1 Complete (Week 1 Setup)
+### ✅ Phase 1 Complete (Week 1 Setup)
 ```
 Task 1A: Quantization Specification ✓
   - 3 market types fully defined
@@ -262,15 +261,15 @@ Task 1D: CI/CD & Zama Integration ✓
 - **YAML**: ~350 lines (CI/CD pipeline)
 - **Documentation**: ~6000+ lines
 
-### 🎯 Upcoming: HAFTA 2 (Week 2-3)
+### 🎯 Upcoming: Phase 2 (Week 2-3)
 - Data pipeline prototype (Node.js adapter)
 - Real quantization implementation
 - Live data provider integration
 - Event submission flow
 - Extended test coverage
 
-## �📝 License
+## 📝 License
 
 MIT — See LICENSE for details.
 
-**Status**: ✅ HAFTA 1 Complete | � HAFTA 2 Ready | 🚀 Production-Ready Architecture
+**Status**: ✅ Phase 1 Complete | 🔄 Phase 2 Ready | 🚀 Production-Ready Architecture
