@@ -6,10 +6,16 @@
   "scripts": {
     "lint": "eslint encrypt.js --fix"
   },
-  "keywords": ["fhe", "encryption", "oracle", "blocksense"],
+  "keywords": [
+    "fhe",
+    "encryption",
+    "oracle",
+    "blocksense"
+  ],
   "author": "Blocksense",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^8.50.0"
+    "eslint": "^8.50.0",
+    "mocha": "^11.7.4"
   }
 }

@@ -1,0 +1,26 @@
+{
+  "name": "blocksense-fhe-oracle",
+  "version": "0.1.0",
+  "description": "Blocksense FHE Oracle - Privacy-preserving prediction market oracle",
+  "workspaces": [
+    "contracts"
+  ],
+  "scripts": {
+    "test:quantization": "npx mocha tests/quantization.test.js",
+    "test:sdk": "cd sdk && npm run lint",
+    "test:contracts": "npm test -w contracts",
+    "lint": "npm run test:sdk",
+    "build": "npm run compile -w contracts"
+  },
+  "devDependencies": {
+    "mocha": "^10.8.2"
+  },
+  "keywords": [
+    "fhe",
+    "oracle",
+    "prediction-market",
+    "blocksense"
+  ],
+  "author": "Blocksense",
+  "license": "MIT"
+}

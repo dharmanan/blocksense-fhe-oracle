@@ -86,6 +86,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
+      - name: Install Root Dependencies
+        run: npm ci
+
       - name: Install SDK Dependencies
         run: npm ci
         working-directory: sdk
@@ -95,12 +98,10 @@ jobs:
         working-directory: sdk
 
       - name: Unit Tests (Quantization JS)
-        run: npx mocha quantization.test.js || true
-        working-directory: tests
+        run: npm run test:quantization
 
       - name: SDK Integration Tests
-        run: npm test 2>/dev/null || echo "Tests completed with status code $?"
-        working-directory: sdk
+        run: npm run test:sdk
 
       - name: Audit Dependencies
         run: npm audit --audit-level=moderate || true
