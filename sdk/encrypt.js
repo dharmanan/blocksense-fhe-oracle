@@ -36,7 +36,7 @@ function quantizePrice(priceValue, decimals = 2) {
 /**
  * Mock Zama encryption (returns base64-encoded payload)
  */
-function encryptWithZamaPublicKey(plainInteger, zamaPubKey) {
+function encryptWithZamaPublicKey(plainInteger) {
   const payload = {
     version: '0.1',
     algorithm: 'zama-tfhe',
@@ -56,9 +56,11 @@ function loadZamaPublicKey(keyPath) {
     if (fs.existsSync(fullPath)) {
       return fs.readFileSync(fullPath, 'utf8');
     }
+    // eslint-disable-next-line no-console
     console.warn(`Public key not found at ${fullPath}, using placeholder`);
     return 'PLACEHOLDER_ZAMA_PUB_KEY';
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error(`Error loading public key: ${err.message}`);
     throw err;
   }
@@ -123,10 +125,12 @@ async function submitEventPrediction(config) {
       const result = await response.json();
       return result;
     } else {
+      // eslint-disable-next-line no-console
       console.log('Submission (no endpoint):', submission);
       return { success: true, submission };
     }
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error(`Submission error: ${err.message}`);
     throw err;
   }
@@ -167,7 +171,9 @@ if (require.main === module) {
   };
 
   submitEventPrediction(exampleConfig)
+    // eslint-disable-next-line no-console
     .then(result => console.log('Result:', result))
+    // eslint-disable-next-line no-console
     .catch(err => console.error('Error:', err));
 }
 
