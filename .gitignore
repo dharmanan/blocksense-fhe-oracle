@@ -1,0 +1,75 @@
+# Node# Node# Node
+
+node_modules/
+
+dist/node_modules/node_modules/
+
+.env
+
+.env.localdist/dist/
+
+
+
+# Rust.env.env
+
+/target/
+
+Cargo.lock.env.local.env.local
+
+
+
+# Solidity.env.*.local.env.*.local
+
+cache/
+
+artifacts/
+
+
+
+# Misc# Rust# Rust
+
+.DS_Store
+
+.vscode//target//target/
+
+*.log
+
+Cargo.lock**/*.rs.bk
+
+Cargo.lock
+
+# Solidity / Hardhat
+
+cache/# Solidity / Hardhat
+
+artifacts/cache/
+
+hh-config.jsonartifacts/
+
+hh-config.json
+
+# Misctypechain/
+
+.DS_Storetypechain-types/
+
+.vscode/
+
+*.log# IDEs
+
+.idea/.DS_Store
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
