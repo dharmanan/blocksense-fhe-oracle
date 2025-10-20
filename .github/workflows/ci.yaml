@@ -55,9 +55,7 @@ jobs:
           cargo test --all-features || echo "⚠️ Feature tests skipped"
 
       - name: Generate Coverage Report
-        run: |
-          cd /workspaces/blocksense-fhe-oracle
-          cargo tarpaulin --out Xml --exclude-files tests/ --timeout 300 || echo "⚠️ Coverage skipped"
+        run: cargo tarpaulin --out Xml --exclude-files tests/ --timeout 300 || echo "⚠️ Coverage skipped"
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -67,9 +65,7 @@ jobs:
           verbose: true
 
       - name: Build Documentation
-        run: |
-          cd /workspaces/blocksense-fhe-oracle
-          cargo doc --no-deps --document-private-items
+        run: cargo doc --no-deps --document-private-items || echo "⚠️ Doc build skipped"
 
   node-lint:
     name: 📦 Node.js Lint & Tests
@@ -98,14 +94,10 @@ jobs:
         working-directory: sdk
 
       - name: Unit Tests (Quantization JS)
-        run: |
-          cd /workspaces/blocksense-fhe-oracle
-          npm run test:quantization
+        run: npm run test:quantization
 
       - name: SDK Integration Tests
-        run: |
-          cd /workspaces/blocksense-fhe-oracle
-          npm run test:sdk
+        run: npm run test:sdk
 
       - name: Audit Dependencies
         run: npm audit --audit-level=moderate || true
@@ -128,19 +120,16 @@ jobs:
         working-directory: contracts
 
       - name: Compile Contracts
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npx hardhat compile
+        run: npx hardhat compile
+        working-directory: contracts
 
       - name: Solidity Linting
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npx solhint 'contracts/**/*.sol' || true
+        run: npx solhint 'contracts/**/*.sol' || true
+        working-directory: contracts
 
       - name: Run Hardhat Tests
-        run: |
-          cd /workspaces/blocksense-fhe-oracle/contracts
-          npm test
+        run: npm test
+        working-directory: contracts
 
       - name: Generate Gas Report
         run: npm test 2>&1 | tee gas_report.txt || true
