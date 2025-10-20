@@ -1,0 +1,13 @@
+[package]
+name = "blocksense-fhe-oracle"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "zama_integer_sum"
+path = "zama_integer_sum.rs"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3

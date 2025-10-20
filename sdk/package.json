@@ -1,0 +1,15 @@
+{
+  "name": "blocksense-fhe-sdk",
+  "version": "0.1.0",
+  "description": "Blocksense FHE Oracle SDK - Encryption adapter for data providers",
+  "main": "encrypt.js",
+  "scripts": {
+    "lint": "eslint encrypt.js --fix"
+  },
+  "keywords": ["fhe", "encryption", "oracle", "blocksense"],
+  "author": "Blocksense",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.50.0"
+  }
+}
