@@ -436,11 +436,21 @@ docs/
 └── WEEK4-COMPLETION-REPORT.md    # Week 4 detailed report
 ```
 
-### 🎯 Upcoming: Phase 5 (Week 5)
-- Solidity smart contract for on-chain threshold verification
-- Integration of ThresholdScheme struct with contracts
-- Deploy to testnet
-- 15+ contract tests
+### 🎯 Next: Phase 5 (Week 5) - Smart Contract Integration
+
+**Planned Tasks**:
+- Implement FHEOracle.sol with on-chain threshold verification
+- Adapt ThresholdScheme struct and modular arithmetic to Solidity
+- Verify Shamir's Secret Sharing shares on-chain
+- Deploy to testnet (Sepolia)
+- Write 15+ comprehensive contract tests
+- Integration with Week 3-4 infrastructure
+
+**Connection Points**:
+- Input: FHE aggregation result from Week 3 examples
+- Threshold logic: Use Lagrange coefficients from Week 4
+- VSS commitments: On-chain verification via modular arithmetic
+- Output: Oracle decision published on-chain
 
 ### 🏆 Key Achievements
 
@@ -464,13 +474,13 @@ MIT — See LICENSE for details.
 | 1-2 | Discovery & Setup | ✅ Complete | Quantization, Hardhat, Architecture, CI/CD |
 | 3 | FHE Compute POC | ✅ Complete | Homomorphic aggregation, 9 tests, privacy verified |
 | 4 | Threshold Decryption | ✅ Complete | Shamir's SSS, VSS, modular arithmetic, 28 tests |
-| 5 | Smart Contract | 🔄 In Progress | On-chain threshold, contract tests, testnet |
+| 5 | Smart Contract | ⏳ Planned | On-chain threshold, contract tests, testnet |
 | 6-10 | End-to-End & Production | ⏳ Planned | Integration, dispute flow, performance tuning, security review |
 
-**Current Progress**: ✅ 40% MVP Complete (Weeks 1-4)
+**Current Progress**: ✅ 40% MVP Complete (Weeks 1-4) | Ready for Week 5
 
 ---
 
-**Status**: ✅ Phase 1-4 Complete | 🔄 Week 5 Ready | 🚀 Production-Ready Architecture
+**Status**: ✅ Phase 1-4 Complete | 🔄 Week 5 Starting Soon | 🚀 Production-Ready Architecture
 
-Latest Commit: [15f6b0e](https://github.com/dharmanan/blocksense-fhe-oracle/commit/15f6b0e) - Week 4 Complete
+Latest Commit: [53fdab6](https://github.com/dharmanan/blocksense-fhe-oracle/commit/53fdab6) - README updated with full Week 3-4 implementation details
