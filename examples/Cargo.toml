@@ -19,5 +19,9 @@ path = "main.rs"
 name = "test_comparison"
 path = "test_comparison.rs"
 
+[[bin]]
+name = "week4_example"
+path = "week4_example.rs"
+
 [dependencies]
 tfhe = "1.4.2"
