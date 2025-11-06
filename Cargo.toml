@@ -3,6 +3,9 @@ members = [
     "examples"
 ]
 
+[workspace.profile.release]
+opt-level = 3
+
 [package]
 name = "blocksense-fhe-oracle"
 version = "0.1.0"

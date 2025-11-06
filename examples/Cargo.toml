@@ -1,5 +1,5 @@
 [package]
-name = "blocksense-fhe-oracle"
+name = "blocksense-examples"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,7 +7,17 @@ edition = "2021"
 name = "zama_integer_sum"
 path = "zama_integer_sum.rs"
 
-[dependencies]
+[[bin]]
+name = "tfhe_simple"
+path = "tfhe_simple.rs"
 
-[profile.release]
-opt-level = 3
+[[bin]]
+name = "aggregation"
+path = "main.rs"
+
+[[bin]]
+name = "test_comparison"
+path = "test_comparison.rs"
+
+[dependencies]
+tfhe = "1.4.2"
