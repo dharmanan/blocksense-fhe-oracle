@@ -23,5 +23,17 @@ path = "test_comparison.rs"
 name = "week4_example"
 path = "week4_example.rs"
 
+[[bin]]
+name = "share_verification"
+path = "share_verification.rs"
+
+[[bin]]
+name = "modular_arithmetic"
+path = "modular_arithmetic.rs"
+
+[[bin]]
+name = "integration_tests"
+path = "integration_tests.rs"
+
 [dependencies]
 tfhe = "1.4.2"
